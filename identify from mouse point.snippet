@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>identify from mouse point</Title>
+      <Description>do identify from mouse click point on map control</Description>
+      <Author>USER</Author>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp"><![CDATA[
+#region"identify from mouse point"
+// ArcGIS Snippet Title:
+// identify from mouse point
+// 
+// Long Description:
+// do identify from mouse click point on map control
+// 
+// Add the following references to the project:
+// (NONE)
+// 
+// Intended ArcGIS Products for this snippet:
+// (NONE)
+// 
+// Applicable ArcGIS Product Versions:
+// 10.2
+// 
+// Required ArcGIS Extensions:
+// (NONE)
+// 
+// Notes:
+// This snippet is intended to be inserted at the base level of a Class.
+// It is not intended to be nested within an existing Method.
+// 
+IIdentify pIdentify = axMapControl.Map.get_Layer(0) as IIdentify;
+
+tagRECT r;
+//Construct a small rectangle out of the x,y coordinates' pixel tolerance.
+r.left = e.x - 2; //Upper left x, top left is 0,0.  
+r.top = e.y - 2; //Upper left y, top left is 0,0.
+r.right = e.x + 2; //Lower right x, top left is 0,0. 
+r.bottom = e.y + 2; //Lower right y, top left is 0,0.
+
+//Transform the device rectangle into a geographic rectangle via the display transformation.  
+IEnvelope pEnvelope = new EnvelopeClass();
+IActiveView pActiveView = axMapControl.Map as IActiveView;
+ESRI.ArcGIS.Display.IDisplayTransformation pDisplayTrans =
+    pActiveView.ScreenDisplay.DisplayTransformation;
+pDisplayTrans.TransformRect(pEnvelope, ref r, 5);
+//5 = esriTransformPosition + esriTransformToMap.
+
+pEnvelope.SpatialReference = axMapControl.SpatialReference;
+                    
+IGeometry pGeo = pEnvelope as IGeometry;
+IArray pIDArray;
+IIdentifyObj pIdObj;
+
+pIDArray = pIdentify.Identify(pGeo);
+if (pIDArray != null)
+{
+    string str = "\n";
+    string lyrName = "";
+    for (int i = 0; i < pIDArray.Count; i++)
+    {
+        pIdObj = pIDArray.get_Element(i) as IIdentifyObj;
+        pIdObj.Flash(axMapControl.ActiveView.ScreenDisplay);
+        str += pIdObj.Name + "\n";
+        lyrName = pIdObj.Layer.Name;
+    }
+    MessageBox.Show("Layer: " + lyrName + "\n" + "Feature: " + str);
+}
+else
+{
+    MessageBox.Show("Nothing!");
+}
+#endregion]]></Code>
+    </Snippet>
+  </CodeSnippet>
+  <ArcGISSnippet>
+    <XMLFormat>9</XMLFormat>
+    <SnippetVersion>1</SnippetVersion>
+    <ParentGUID>NOT_SET</ParentGUID>
+    <Language>CSharp</Language>
+    <GUID>NOT_SET</GUID>
+    <Name>identify from mouse point</Name>
+    <LongDescription>do identify from mouse click point on map control</LongDescription>
+    <Products>
+      <Product ProductType="">
+      </Product>
+    </Products>
+    <Extensions>
+      <Extension />
+    </Extensions>
+    <ArcGISAuthor>USER</ArcGISAuthor>
+    <ProductVersions>
+      <ProductVersion>10.2</ProductVersion>
+    </ProductVersions>
+    <SnippetType>function-sub-method</SnippetType>
+    <References>
+      <Reference />
+    </References>
+    <InputParameters>
+      <Input />
+    </InputParameters>
+    <ReturnParameters>
+      <Return />
+    </ReturnParameters>
+    <Members>
+      <Member />
+    </Members>
+    <CodeBody><![CDATA[IIdentify pIdentify = axMapControl.Map.get_Layer(0) as IIdentify;
+
+tagRECT r;
+//Construct a small rectangle out of the x,y coordinates' pixel tolerance.
+r.left = e.x - 2; //Upper left x, top left is 0,0.  
+r.top = e.y - 2; //Upper left y, top left is 0,0.
+r.right = e.x + 2; //Lower right x, top left is 0,0. 
+r.bottom = e.y + 2; //Lower right y, top left is 0,0.
+
+//Transform the device rectangle into a geographic rectangle via the display transformation.  
+IEnvelope pEnvelope = new EnvelopeClass();
+IActiveView pActiveView = axMapControl.Map as IActiveView;
+ESRI.ArcGIS.Display.IDisplayTransformation pDisplayTrans =
+    pActiveView.ScreenDisplay.DisplayTransformation;
+pDisplayTrans.TransformRect(pEnvelope, ref r, 5);
+//5 = esriTransformPosition + esriTransformToMap.
+
+pEnvelope.SpatialReference = axMapControl.SpatialReference;
+                    
+IGeometry pGeo = pEnvelope as IGeometry;
+IArray pIDArray;
+IIdentifyObj pIdObj;
+
+pIDArray = pIdentify.Identify(pGeo);
+if (pIDArray != null)
+{
+    string str = "\n";
+    string lyrName = "";
+    for (int i = 0; i < pIDArray.Count; i++)
+    {
+        pIdObj = pIDArray.get_Element(i) as IIdentifyObj;
+        pIdObj.Flash(axMapControl.ActiveView.ScreenDisplay);
+        str += pIdObj.Name + "\n";
+        lyrName = pIdObj.Layer.Name;
+    }
+    MessageBox.Show("Layer: " + lyrName + "\n" + "Feature: " + str);
+}
+else
+{
+    MessageBox.Show("Nothing!");
+}]]></CodeBody>
+  </ArcGISSnippet>
+</CodeSnippets>
